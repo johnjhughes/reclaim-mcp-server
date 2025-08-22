@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /**
  * @fileoverview Main entry point for the Reclaim.ai MCP Server.
  * Initializes the server, registers tools and resources, and connects the transport.
