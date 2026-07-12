@@ -4,6 +4,8 @@
 # Reclaim.ai MCP Server 🚀 _(UNOFFICIAL)_
 
 > **⚠️ UNOFFICIAL & UNAFFILIATED** – This project is **not** endorsed, sponsored, or supported by Reclaim.ai. It simply uses Reclaim's public API. Use at your own risk and comply with Reclaim's Terms of Service.
+>
+> **Official alternative:** Reclaim.ai offers an official remote MCP server at `https://api.app.reclaim.ai/api/mcp` (currently waitlisted). If you have access, you may prefer it over this community server. See [#3](https://github.com/johnjhughes/reclaim-mcp-server/issues/3).
 
 A community‑maintained [**Model Context Protocol**](https://modelcontextprotocol.io/) (MCP) server that lets _any_ MCP‑capable client (Claude Desktop, Continue, Cursor, custom scripts, …) interact with the [Reclaim.ai API](https://reclaim.ai/) through a set of standard **resources** & **tools**.
 
