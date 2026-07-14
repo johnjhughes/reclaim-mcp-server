@@ -3,12 +3,32 @@
  * Currently includes a resource for listing active tasks.
  */
 
-import * as api from "../reclaim-client.js";
-import { ReclaimError } from "../types/reclaim.js"; // Ensure .js extension if needed by module system
+import type { Server } from "@modelcontextprotocol/sdk/server/index.js";
+import {
+  ErrorCode,
+  ListResourcesRequestSchema,
+  McpError,
+  ReadResourceRequestSchema,
+  type ReadResourceResult,
+  type Resource,
+} from "@modelcontextprotocol/sdk/types.js";
 
-import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-// Import specific result and content types from the SDK
-import type { ReadResourceResult } from "@modelcontextprotocol/sdk/types.js";
+import { logger } from "../logger.js";
+import * as defaultApi from "../reclaim-client.js";
+import { type ReclaimApiClient, ReclaimError } from "../types/reclaim.js";
+
+const activeTasksUri = "tasks://active";
+
+const activeTasksResource: Resource = {
+  uri: activeTasksUri,
+  name: "reclaim_active_tasks",
+  title: "Active Reclaim Tasks",
+  description:
+    "Provides a list of all active tasks from Reclaim.ai as a JSON array. Active means tasks that are not deleted and whose status is not ARCHIVED or CANCELLED.\n" +
+    "IMPORTANT NOTE ON 'COMPLETE' STATUS: Tasks with status 'COMPLETE' (meaning scheduled time is finished) ARE INCLUDED here because the user has NOT marked them as done. These should be treated as active, potentially past-due tasks, not finished items.",
+  mimeType: "application/json",
+  readOnlyHint: true,
+};
 
 /**
  * Wraps an API call promise specifically for MCP Resource handlers.
@@ -60,7 +80,7 @@ async function wrapResourceCall(
     }
 
     // Log the detailed error server-side
-    console.error(
+    logger.error(
       `MCP Resource Error (URI: ${uri}): ${errorMessage}`,
       errorDetail ? `\nDetail: ${errorDetail}` : "",
     );
@@ -75,32 +95,28 @@ async function wrapResourceCall(
  * Registers all task-related resources with the provided MCP Server instance.
  * Currently registers the 'tasks://active' resource.
  *
- * @param server - The McpServer instance to register resources against.
+ * @param server - The low-level MCP Server instance to register resource handlers against.
+ * @param apiClient - Optional API client for dependency injection (used in testing)
  */
-export function registerTaskResources(server: McpServer): void {
-  // Register a static resource for active tasks.
-  // The signature requires (name, uriTemplate, [metadata], handler)
-  server.resource(
-    "reclaim_active_tasks", // Internal name for the resource registration
-    "tasks://active", // The static URI string for this resource
-    {
-      // Optional metadata object
-      title: "Active Reclaim Tasks",
-      description:
-        "List of all active tasks from Reclaim.ai. Active means tasks that are not deleted and whose status is not ARCHIVED or CANCELLED. Tasks with status 'COMPLETE' (meaning scheduled time is finished) are included here.",
-      readOnlyHint: true,
-    },
-    // Handler function: (uri: URL, params: Record<string, string | string[]>, extra) => Promise<ReadResourceResult>
-    // For static URIs, params will be empty.
-    async (uri) => {
-      // Fetch all tasks, then filter for active ones using the client's filter function
-      const activeTasksPromise = api
-        .listTasks()
-        .then((allTasks) => api.filterActiveTasks(allTasks));
+export function registerTaskResources(
+  server: Server,
+  apiClient: ReclaimApiClient = defaultApi,
+): void {
+  server.registerCapabilities({ resources: {} });
 
-      // Use the wrapper to format the result correctly for the SDK
-      // Pass uri.href which is the string representation of the URL
-      return wrapResourceCall(uri.href, activeTasksPromise);
-    },
-  );
+  server.setRequestHandler(ListResourcesRequestSchema, async () => ({
+    resources: [activeTasksResource],
+  }));
+
+  server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
+    const { uri } = request.params;
+    if (uri !== activeTasksUri) {
+      throw new McpError(ErrorCode.InvalidParams, `Resource ${uri} not found`);
+    }
+
+    const activeTasksPromise = apiClient
+      .listTasks()
+      .then((allTasks) => apiClient.filterActiveTasks(allTasks));
+    return wrapResourceCall(uri, activeTasksPromise);
+  });
 }

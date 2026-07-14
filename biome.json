@@ -1,0 +1,120 @@
+{
+  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+
+  "organizeImports": { "enabled": true },
+
+  "files": {
+    "ignore": [
+      "dist/**",
+      "node_modules/**",
+      "coverage/**",
+      ".next/**",
+      ".git/**",
+      "*.cjs",
+      ".env*",
+      "**/*.d.ts"
+    ]
+  },
+
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+
+      "correctness": {
+        "noUnusedVariables": "error",
+        "noUnreachable": "error"
+      },
+
+      "suspicious": {
+        "noExplicitAny": "error",
+        "noImplicitAnyLet": "error",
+        "noPrototypeBuiltins": "error",
+        "noFallthroughSwitchClause": "error",
+        "noAsyncPromiseExecutor": "error"
+      },
+
+      "style": {
+        "noNonNullAssertion": "error",
+        "useShorthandArrayType": "error",
+        "useConst": "error",
+        "useTemplate": "warn",
+        "noVar": "error",
+
+        "useNamingConvention": {
+          "level": "error",
+          "options": {
+            "conventions": [
+              {
+                "selector": { "kind": "any" },
+                "formats": ["camelCase", "PascalCase", "CONSTANT_CASE"]
+              }
+            ]
+          }
+        },
+
+        "useImportType": "warn",
+        "useExportType": "warn",
+        "noRestrictedGlobals": {
+          "level": "warn",
+          "options": {
+            "deniedGlobals": ["console"]
+          }
+        },
+        "useShorthandFunctionType": "warn"
+      },
+
+      "complexity": {
+        "noBannedTypes": "error",
+        "useLiteralKeys": "error",
+        "noStaticOnlyClass": "error",
+        "noExcessiveCognitiveComplexity": {
+          "level": "warn",
+          "options": {
+            "maxAllowedComplexity": 15
+          }
+        },
+        "useOptionalChain": "warn"
+      },
+
+      "performance": {
+        "recommended": true,
+        "noDelete": "warn",
+        "noAccumulatingSpread": "warn"
+      },
+
+      "security": {
+        "noDangerouslySetInnerHtml": "error",
+        "noDangerouslySetInnerHtmlWithChildren": "error"
+      }
+    }
+  },
+
+  "overrides": [
+    {
+      "include": ["**/*.{tsx,jsx}"],
+      "linter": {
+        "rules": { "a11y": { "recommended": true } }
+      }
+    }
+  ],
+
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 100,
+    "lineEnding": "lf"
+  },
+
+  "javascript": {
+    "formatter": {
+      "semicolons": "always",
+      "quoteStyle": "double",
+      "trailingCommas": "all",
+      "arrowParentheses": "always",
+      "bracketSpacing": true,
+      "bracketSameLine": false
+    }
+  }
+}

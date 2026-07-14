@@ -23,7 +23,7 @@ A community‑maintained [**Model Context Protocol**](https://modelcontextprotoc
 
 - **Active‑tasks resource** (`tasks://active`)
 
-- **14 task‑operation tools** (list, create, update, complete, timers, …)
+- **13 task‑operation tools** (list, create, update, complete, timers, …)
 
 - 🛡 Type‑safe (TypeScript + Zod) & solid error‑handling
 
@@ -60,40 +60,36 @@ A community‑maintained [**Model Context Protocol**](https://modelcontextprotoc
 ## 🚀 Quick Start
 
 1. **Prerequisites**
-   - Node.js ≥ 18  
+
+   - Node.js ≥ 18
    - [Reclaim API key](https://app.reclaim.ai/settings/developer)
 
 2. **Claude Desktop configuration (minimal)**
    ```json
-{
-  "mcpServers": {
-    "reclaim": {
-      "command": "npx",
-      "args": [
-        "reclaim-mcp-server"
-      ],
-      "env": { "RECLAIM_API_KEY": "xxx" }
-    }
-  }
-}
+   {
+     "mcpServers": {
+       "reclaim": {
+         "command": "npx",
+         "args": ["reclaim-mcp-server"],
+         "env": { "RECLAIM_API_KEY": "xxx" }
+       }
+     }
+   }
    ```
 
 **Alternative Configuration:**
 
-   ```json
+```json
 {
   "mcpServers": {
     "reclaim": {
       "command": "absolute/path/to/node (run `which node` in terminal)",
-      "args": [
-        "/absolute/path/to/reclaim-mcp-server/dist/index.js"
-      ],
+      "args": ["/absolute/path/to/reclaim-mcp-server/dist/index.js"],
       "env": { "RECLAIM_API_KEY": "xxx" }
     }
   }
 }
-   ```
-
+```
 
 ### Alternative: Manual Installation
 
