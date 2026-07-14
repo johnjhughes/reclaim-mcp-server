@@ -57,7 +57,6 @@ const serverInfo = {
 // --- Server Configuration & Initialization ---
 export interface ServerConfig {
   isTestMode?: boolean;
-  apiKey?: string;
   // Allow injecting API client for tests OR use default
   apiClient?: ReclaimApiClient;
 }
@@ -110,7 +109,8 @@ const toolHandlers = new Map<string, ToolHandler>([
  * @returns The initialized server instance
  */
 export function initializeServer(config: ServerConfig = {}): Server {
-  const { isTestMode = false, apiKey = process.env.RECLAIM_API_KEY } = config;
+  const { isTestMode = false } = config;
+  const apiKey = process.env.RECLAIM_API_KEY;
   // Use injected apiClient if provided (for tests), otherwise use the default import
   const apiClient = config.apiClient || defaultApi;
 

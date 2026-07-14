@@ -5,12 +5,6 @@ export default defineConfig({
     // Use longer timeout for API-calling tests
     testTimeout: 30000,
 
-    // Environment configuration
-    environmentOptions: {
-      // Load environment variables from .env file
-      setupFiles: [".env"],
-    },
-
     // Include source maps for better error reporting
     include: ["tests/**/*.test.ts"],
 

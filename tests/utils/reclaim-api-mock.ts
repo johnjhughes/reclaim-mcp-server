@@ -250,7 +250,7 @@ export function createReclaimApiMock(): ReclaimApiClient {
     tasks[taskIndex] = cleanTask;
 
     // Return a deep copy to prevent mutation of the mock state
-    return JSON.parse(JSON.stringify(updatedTask));
+    return JSON.parse(JSON.stringify(cleanTask));
   };
 
   const deleteTask = async (taskId: number): Promise<void> => {
