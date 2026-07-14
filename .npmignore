@@ -1,0 +1,16 @@
+# Test files
+tests/
+dist/tests/
+coverage/
+
+# Environment and config
+.env*
+.vscode/
+.github/
+
+# Build artifacts
+*.tsbuildinfo
+
+# Development files
+*.log
+*.tgz

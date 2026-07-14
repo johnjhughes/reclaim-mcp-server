@@ -23,13 +23,7 @@ export interface Task {
    * but the user may *not* have marked the task as actually done. Such tasks are still
    * considered "active" for filtering purposes unless `ARCHIVED`, `CANCELLED`, or `deleted`.
    */
-  status?:
-    | "NEW"
-    | "SCHEDULED"
-    | "IN_PROGRESS"
-    | "COMPLETE"
-    | "CANCELLED"
-    | "ARCHIVED";
+  status?: "NEW" | "SCHEDULED" | "IN_PROGRESS" | "COMPLETE" | "CANCELLED" | "ARCHIVED";
   due?: string; // ISO 8601 format (e.g., "2025-04-22T03:44:52.081Z")
   snoozeUntil?: string; // ISO 8601 format
   eventColor?: string; // e.g., 'GRAPE', 'LAVENDER', 'GRAPHITE'
@@ -44,12 +38,12 @@ export interface Task {
   index?: number; // Internal sorting index?
   alwaysPrivate?: boolean; // Should event always be private on calendar?
   sortKey?: number; // Internal sorting key?
-  taskSource?: { type: string; [key: string]: any }; // Origin (e.g., RECLAIM_APP, GOOGLE_CALENDAR)
+  taskSource?: { type: string; [key: string]: unknown }; // Origin (e.g., RECLAIM_APP, GOOGLE_CALENDAR)
   readOnlyFields?: string[]; // Fields that cannot be modified
   type?: "TASK" | "HABIT"; // Type of item
   recurringAssignmentType?: string; // How recurrence is handled
   // Allow for additional properties not explicitly defined, as API might add fields
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface TaskInputData {
@@ -63,13 +57,7 @@ export interface TaskInputData {
   /**
    * Task status. See `Task` interface for notes on the `COMPLETE` status meaning.
    */
-  status?:
-    | "NEW"
-    | "SCHEDULED"
-    | "IN_PROGRESS"
-    | "COMPLETE"
-    | "CANCELLED"
-    | "ARCHIVED";
+  status?: "NEW" | "SCHEDULED" | "IN_PROGRESS" | "COMPLETE" | "CANCELLED" | "ARCHIVED";
   /** Deadline for the task. Handled by `parseDeadline` in API client. Can be number (days from now) or ISO/YYYY-MM-DD string. */
   deadline?: number | string;
   /** Date until task is snoozed. Handled by `parseDeadline` in API client. Can be number (days from now) or ISO/YYYY-MM-DD string. */
@@ -88,17 +76,54 @@ export interface TaskInputData {
  */
 export class ReclaimError extends Error {
   status?: number;
-  detail?: any;
+  detail?: unknown;
+  rawResponse?: unknown;
 
-  constructor(message: string, status?: number, detail?: any) {
+  constructor(message: string, status?: number, detail?: unknown, rawResponse?: unknown) {
     super(message);
     this.name = "ReclaimError";
-    this.status = status;
+    if (status !== undefined) {
+      this.status = status;
+    }
     this.detail = detail;
+    this.rawResponse = rawResponse;
 
     // Maintains proper stack trace in V8 environments (Node.js)
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, ReclaimError);
     }
   }
+}
+
+/**
+ * Interface for all Reclaim API client methods
+ * This allows for dependency injection and mocking in tests
+ */
+export interface ReclaimApiClient {
+  // Task retrieval methods
+  listTasks(): Promise<Task[]>;
+  getTask(taskId: number): Promise<Task>;
+  filterActiveTasks(tasks: Task[]): Task[];
+
+  // Task CRUD operations
+  createTask(taskData: TaskInputData): Promise<Task>;
+  updateTask(taskId: number, taskData: TaskInputData): Promise<Task>;
+  deleteTask(taskId: number): Promise<void>;
+
+  // Task status operations
+  markTaskComplete(taskId: number): Promise<unknown>;
+  markTaskIncomplete(taskId: number): Promise<unknown>;
+
+  // Task time management
+  addTimeToTask(taskId: number, minutes: number): Promise<unknown>;
+  logWorkForTask(taskId: number, minutes: number, end?: string): Promise<unknown>;
+
+  // Task scheduling operations
+  startTaskTimer(taskId: number): Promise<unknown>;
+  stopTaskTimer(taskId: number): Promise<unknown>;
+  prioritizeTask(taskId: number): Promise<unknown>;
+  clearTaskExceptions(taskId: number): Promise<unknown>;
+
+  // Helper methods
+  parseDeadline(deadlineInput: number | string | undefined): string;
 }
