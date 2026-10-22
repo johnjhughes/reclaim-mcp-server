@@ -62,18 +62,6 @@ export interface ServerConfig {
 }
 
 /**
- * Logs SDK version information for debugging.
- */
-function logSdkVersion(): void {
-  try {
-    const sdkPackage = require("@modelcontextprotocol/sdk/package.json");
-    logger.error(`MCP SDK version: ${sdkPackage.version}`);
-  } catch (e) {
-    logger.error("Could not determine MCP SDK version", e);
-  }
-}
-
-/**
  * Type definition for handler functions using the SDK's CallToolResult
  */
 type ToolHandler = (params: unknown, apiClient: ReclaimApiClient) => Promise<CallToolResult>; // Use CallToolResult from SDK types
@@ -125,9 +113,6 @@ export function initializeServer(config: ServerConfig = {}): Server {
 
   const server = new Server(serverInfo, { capabilities: { tools: {} } });
   logger.error(`Server instance created for "${serverInfo.name}".`);
-
-  // Log SDK version for debugging
-  logSdkVersion();
 
   // --- Register EXPLICIT Handlers ---
 
