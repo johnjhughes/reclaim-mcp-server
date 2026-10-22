@@ -103,6 +103,7 @@ describe("MCP server handlers", () => {
         }),
       ]),
     );
+    expect(listed.resources[0]).not.toHaveProperty("readOnlyHint");
 
     const read = await environment.client.readResource({ uri: "tasks://active" });
     const first = read.contents[0];
