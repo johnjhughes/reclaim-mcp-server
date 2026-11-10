@@ -14,6 +14,7 @@ export default defineConfig({
     // Coverage configuration
     coverage: {
       reporter: ["text", "json", "html"],
+      include: ["src/**/*.ts"],
       exclude: ["**/node_modules/**", "**/tests/**", "dist/**", "vitest.config.ts"],
     },
   },

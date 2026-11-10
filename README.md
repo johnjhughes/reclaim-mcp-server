@@ -61,7 +61,7 @@ A community‑maintained [**Model Context Protocol**](https://modelcontextprotoc
 
 1. **Prerequisites**
 
-   - Node.js ≥ 18
+   - Node.js `^22.12`, `^24`, or `>=26`. CI covers the supported Node.js 22 and 24 LTS lines.
    - [Reclaim API key](https://app.reclaim.ai/settings/developer)
 
 2. **Claude Desktop configuration (minimal)**
@@ -105,6 +105,8 @@ RECLAIM_API_KEY=your_api_key node dist/index.js
 ```
 
 ## 🤝 Contributing
+
+Development uses the Node.js version pinned in `.node-version`. Runtime and the Vitest 5 harness require Node.js `^22.12`, `^24`, or `>=26`.
 
 Bug reports & PRs welcome! To contribute:
 
